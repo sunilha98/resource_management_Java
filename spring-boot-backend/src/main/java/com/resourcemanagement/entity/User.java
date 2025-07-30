@@ -58,7 +58,23 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    // Constructors
+    @NotBlank
+    @Column(name = "created_by", nullable = false)
+    private String createdBy;
+    
+    @NotBlank
+    @Column(name = "updated_by", nullable = false)
+    private String updatedBy;
+    
+    public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	// Constructors
     public User() {}
     
     public User(String username, String email, String password, String firstName, String lastName, UserRole role) {
@@ -92,7 +108,7 @@ public class User {
     public UserRole getRole() { return role; }
     public void setRole(UserRole role) { this.role = role; }
     
-    public Boolean getIsActive() { return isActive; }
+    public Boolean isActive() { return isActive; }
     public void setIsActive(Boolean isActive) { this.isActive = isActive; }
     
     public LocalDateTime getCreatedAt() { return createdAt; }
@@ -101,7 +117,15 @@ public class User {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
     
-    @Override
+    public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;

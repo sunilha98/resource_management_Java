@@ -60,12 +60,17 @@ public class JwtUtils {
     }
     
     private String createToken(Map<String, Object> claims, String subject) {
+    	
+        Date now = new Date(System.currentTimeMillis());
+        Date expirationDate = new Date(System.currentTimeMillis() + jwtExpirationMs);
+        
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .claim(Claims.SUBJECT, subject) 
+                .claim("role", claims.get("role"))
+                .claim("id", claims.get("id"))
+                .issuedAt(now)
+                .expiration(expirationDate)
+                .signWith(getSignKey())
                 .compact();
     }
     

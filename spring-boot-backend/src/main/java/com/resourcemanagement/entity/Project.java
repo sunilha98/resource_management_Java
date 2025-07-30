@@ -6,6 +6,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -30,15 +32,18 @@ public class Project {
     private String description;
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "sow_id")
     private Sow sow;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
+    @JsonIgnore
     private Client client;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "practice_id")
+    @JsonIgnore
     private Practice practice;
     
     @Enumerated(EnumType.STRING)

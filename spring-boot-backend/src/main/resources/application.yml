@@ -38,7 +38,7 @@ management:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
+    secret: qXjYpZmVcDbWnFkLgHsIrOtUeQxSzAaBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789+/ABCDEF
     expiration: 86400000 # 24 hours
 
 logging:

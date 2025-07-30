@@ -49,4 +49,17 @@ public class AuthController {
         UserDTO userDTO = new UserDTO(user);
         return ResponseEntity.ok(userDTO);
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody LoginRequest loginRequest) {
+        try {
+            User user = new User();
+            user.setUsername(loginRequest.getUsername());
+            user.setPassword(loginRequest.getPassword());
+            User authResponse = authService.registerUser(user);
+            return ResponseEntity.ok(authResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
+    }
 }

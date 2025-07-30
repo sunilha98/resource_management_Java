@@ -17,4 +17,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     
     @Query("SELECT p FROM Project p ORDER BY p.createdAt DESC")
     List<Project> findAllOrderByCreatedAtDesc();
+    
+    Project findByProjectCode(String projectCode);
 }

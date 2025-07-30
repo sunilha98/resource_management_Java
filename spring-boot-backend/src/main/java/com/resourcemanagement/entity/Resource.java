@@ -7,6 +7,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,10 +41,12 @@ public class Resource {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "title_id")
+    @JsonIgnore
     private Title title;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
+    @JsonIgnore
     private Location location;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,11 +55,17 @@ public class Resource {
     
     @Column(precision = 3, scale = 1)
     private BigDecimal experience;
+
+    private Integer allocationPercentage; 
     
-    @ElementCollection
-    @CollectionTable(name = "resource_skillsets", joinColumns = @JoinColumn(name = "resource_id"))
-    @Column(name = "skillset_id")
-    private List<Long> skillsetIds;
+    @ManyToMany
+    @JoinTable(
+        name = "resource_skillsets",
+        joinColumns = @JoinColumn(name = "resource_id"),
+        inverseJoinColumns = @JoinColumn(name = "skillset_id")
+    )
+    private List<Skillset> skillsets;
+
     
     @Column(name = "is_active")
     private Boolean isActive = true;
@@ -103,10 +113,24 @@ public class Resource {
     public BigDecimal getExperience() { return experience; }
     public void setExperience(BigDecimal experience) { this.experience = experience; }
     
-    public List<Long> getSkillsetIds() { return skillsetIds; }
-    public void setSkillsetIds(List<Long> skillsetIds) { this.skillsetIds = skillsetIds; }
     
-    public Boolean getIsActive() { return isActive; }
+    public List<Skillset> getSkillsets() {
+		return skillsets;
+	}
+
+	public void setSkillsets(List<Skillset> skillsets) {
+		this.skillsets = skillsets;
+	}
+
+	public Integer getAllocationPercentage() {
+		return allocationPercentage;
+	}
+
+	public void setAllocationPercentage(Integer allocationPercentage) {
+		this.allocationPercentage = allocationPercentage;
+	}
+
+	public Boolean getIsActive() { return isActive; }
     public void setIsActive(Boolean isActive) { this.isActive = isActive; }
     
     public BenchStatus getBenchStatus() { return benchStatus; }
