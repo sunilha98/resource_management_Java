@@ -1,8 +1,5 @@
 package com.resourcemanagement.controller;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,11 +28,11 @@ public class ProjectController {
 	private ProjectRepository projectRepository;
 
 	@GetMapping
-    @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('RMT') or hasRole('PROJECT_MANAGER')")
-    public ResponseEntity<List<ProjectsDTO>> getAllProjects() {
-        List<Project> projects = projectRepository.findAllOrderByCreatedAtDesc();
-        return ResponseEntity.ok(projects.stream().map(this::mapToSummaryDTO).collect(Collectors.toList()));
-    }
+	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('RMT') or hasRole('PROJECT_MANAGER')")
+	public ResponseEntity<List<ProjectsDTO>> getAllProjects() {
+		List<Project> projects = projectRepository.findAllOrderByCreatedAtDesc();
+		return ResponseEntity.ok(projects.stream().map(this::mapToSummaryDTO).collect(Collectors.toList()));
+	}
 
 	private ProjectsDTO mapToSummaryDTO(Project project) {
 		ProjectsDTO dto = new ProjectsDTO();
