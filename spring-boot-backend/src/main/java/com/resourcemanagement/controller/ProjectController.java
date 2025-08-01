@@ -39,6 +39,7 @@ public class ProjectController {
 
 	private ProjectsDTO mapToSummaryDTO(Project project) {
 		ProjectsDTO dto = new ProjectsDTO();
+		dto.setId(project.getId());
 		dto.setProjectCode(project.getProjectCode());
 		dto.setName(project.getName());
 		dto.setClientName(project.getClient().getName());
