@@ -11,7 +11,7 @@ import com.resourcemanagement.entity.Project;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
-	List<Project> findByStatus(Project.ProjectStatus status);
+	List<Project> findByStatus(String status);
 
 	@Query("SELECT COUNT(p) FROM Project p WHERE p.status = 'IN_FLIGHT'")
 	Long countActiveProjects();
@@ -20,4 +20,11 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 	List<Project> findAllOrderByCreatedAtDesc();
 
 	Project findByProjectCode(String projectCode);
+
+	@Query("SELECT p FROM Project p WHERE p.status = 'Change Requested'")
+	List<Project> findAllChangeRequests();
+
+	@Query("SELECT DISTINCT p FROM Project p JOIN FETCH p.client JOIN FETCH p.practice")
+	List<Project> findPortfolioSummary();
+
 }

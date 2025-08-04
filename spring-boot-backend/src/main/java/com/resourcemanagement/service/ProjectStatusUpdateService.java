@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.resourcemanagement.dto.ProjectStatusUpdateDTO;
 import com.resourcemanagement.entity.Project;
-import com.resourcemanagement.entity.Project.ProjectStatus;
 import com.resourcemanagement.entity.ProjectStatusUpdate;
 import com.resourcemanagement.repository.ProjectRepository;
 import com.resourcemanagement.repository.ProjectStatusUpdateRepository;
@@ -27,7 +26,7 @@ public class ProjectStatusUpdateService {
 		Project project = projectRepo.findById(dto.getProjectId())
 				.orElseThrow(() -> new RuntimeException("Project not found"));
 
-		project.setStatus(ProjectStatus.valueOf(dto.getStatus()));
+		project.setStatus(dto.getStatus());
 
 		ProjectStatusUpdate status = new ProjectStatusUpdate();
 		status.setProject(project);

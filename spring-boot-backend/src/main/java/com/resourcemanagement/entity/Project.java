@@ -12,8 +12,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -64,8 +62,7 @@ public class Project {
 	@JsonIgnore
 	private Practice practice;
 
-	@Enumerated(EnumType.STRING)
-	private ProjectStatus status = ProjectStatus.PROPOSED;
+	private String status;
 
 	@Column(name = "start_date")
 	private LocalDateTime startDate;
@@ -97,7 +94,4 @@ public class Project {
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	public enum ProjectStatus {
-		PROPOSED, IN_FLIGHT, COMPLETED, ON_HOLD, CANCELLED
-	}
 }

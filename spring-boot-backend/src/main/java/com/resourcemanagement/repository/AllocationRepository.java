@@ -26,4 +26,10 @@ public interface AllocationRepository extends JpaRepository<Allocation, Long> {
 	@Query("DELETE FROM Allocation a WHERE a.project.id = :projectId AND a.resource.id = :resourceId")
 	void deleteByProjectIdAndResourceId(@Param("projectId") Long projectId, @Param("resourceId") Long resourceId);
 
+	@Query("SELECT DISTINCT a.resource.id FROM Allocation a")
+	List<Long> findAllAllocatedResourceIds();
+
+	@Query("SELECT a FROM Allocation a JOIN FETCH a.resource JOIN FETCH a.project")
+	List<Allocation> findAllocatedResources();
+
 }

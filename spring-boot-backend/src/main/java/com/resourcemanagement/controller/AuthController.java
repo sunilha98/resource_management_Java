@@ -16,7 +16,6 @@ import com.resourcemanagement.dto.LoginRequest;
 import com.resourcemanagement.dto.UserDTO;
 import com.resourcemanagement.entity.User;
 import com.resourcemanagement.repository.UserRepository;
-import com.resourcemanagement.security.JwtUtils;
 import com.resourcemanagement.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -31,9 +30,6 @@ public class AuthController {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private JwtUtils jwtUtils;
 
 	@PostMapping("/login")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {

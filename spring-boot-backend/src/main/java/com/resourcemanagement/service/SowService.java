@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.resourcemanagement.dto.SowUploadRequest;
 import com.resourcemanagement.entity.Client;
 import com.resourcemanagement.entity.Project;
-import com.resourcemanagement.entity.Project.ProjectStatus;
 import com.resourcemanagement.entity.Sow;
 import com.resourcemanagement.entity.Sow.Priority;
 import com.resourcemanagement.entity.Sow.SowStatus;
@@ -60,7 +59,7 @@ public class SowService {
 		project.setName(request.getProjectName());
 		project.setClient(client);
 		project.setSow(sow);
-		project.setStatus(ProjectStatus.PROPOSED);
+		project.setStatus("PROPOSED");
 		project.setCreatedAt(LocalDateTime.now());
 		project.setPractice(practiceRepository.findByName(request.getPositions().get(0).getTitle()));
 		projectRepository.save(project);

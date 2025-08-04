@@ -43,7 +43,7 @@ public class ProjectController {
 		dto.setName(project.getName());
 		dto.setClientName(project.getClient().getName());
 		dto.setPractice(project.getPractice().getName());
-		dto.setStatus(project.getStatus().name());
+		dto.setStatus(project.getStatus());
 		dto.setStartDate(project.getStartDate());
 		dto.setEndDate(project.getEndDate());
 		return dto;
@@ -60,6 +60,7 @@ public class ProjectController {
 	@LogActivity(action = "Created Project", module = "Project Management")
 	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('RMT')")
 	public ResponseEntity<Project> createProject(@RequestBody Project project) {
+		project.setStatus("PROPOSED");
 		Project savedProject = projectRepository.save(project);
 
 		ActivityContextHolder.setDetail("Project", savedProject.getName());

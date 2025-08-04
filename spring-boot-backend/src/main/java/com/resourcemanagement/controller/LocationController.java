@@ -25,14 +25,8 @@ import com.resourcemanagement.service.LocationService;
 @RequestMapping("/masters/locations")
 public class LocationController {
 
-	private final AllocationController allocationController;
-
 	@Autowired
 	private LocationService locationService;
-
-	LocationController(AllocationController allocationController) {
-		this.allocationController = allocationController;
-	}
 
 	@GetMapping
 	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('RMT')")
