@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.ActivityContextHolder;
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.dto.ClientRequest;
 import com.resourcemanagement.service.ClientService;
 
@@ -15,13 +17,16 @@ import com.resourcemanagement.service.ClientService;
 public class ClientController {
 
 	@Autowired
-    private ClientService clientService;
+	private ClientService clientService;
 
-    @PostMapping
-    public ResponseEntity<String> createClient(@RequestBody ClientRequest request) {
-        clientService.createClient(request);
-        return ResponseEntity.ok("Client created successfully");
-    }
-    
-//    TODO list all clients needed on UI also
+	@LogActivity(action = "Created Client", module = "Client Management")
+	@PostMapping
+	public ResponseEntity<String> createClient(@RequestBody ClientRequest request) {
+		clientService.createClient(request);
+
+		ActivityContextHolder.setDetail("Client", request.getName());
+
+		return ResponseEntity.ok("Client created successfully");
+	}
+
 }

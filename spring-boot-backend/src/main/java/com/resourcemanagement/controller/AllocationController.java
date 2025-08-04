@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.dto.AllocationDTO;
 import com.resourcemanagement.entity.Allocation;
 import com.resourcemanagement.entity.Resource;
@@ -67,6 +68,7 @@ public class AllocationController {
     
     @PostMapping
     @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('RMT')")
+    @LogActivity(action = "Created Allocation", module = "Allocation Management")
     public ResponseEntity<Allocation> createAllocation(@RequestBody AllocationDTO allocationDTO) {
     	
     	Allocation allocation = new Allocation();

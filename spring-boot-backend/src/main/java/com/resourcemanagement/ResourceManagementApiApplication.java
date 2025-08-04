@@ -13,3 +13,5 @@ public class ResourceManagementApiApplication {
         SpringApplication.run(ResourceManagementApiApplication.class, args);
     }
 }
+
+// TODO async and details logging
