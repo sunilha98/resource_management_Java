@@ -14,22 +14,22 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LessonLearnedDTO {
 
-    private Long id;
+	private Long id;
 
-    @NotBlank(message = "Project ID is required")
-    private String projectCode;
+	@NotBlank(message = "Project ID is required")
+	private String projectCode;
 
-    @NotBlank(message = "Title is required")
-    private String title;
+	@NotBlank(message = "Title is required")
+	private String title;
 
-    @NotBlank(message = "Description is required")
-    private String description;
+	@NotBlank(message = "Description is required")
+	private String description;
 
-    @NotBlank(message = "Category is required")
-    private String category; // e.g., Success, Failure, Risk, Recommendation
+	@NotBlank(message = "Category is required")
+	private String category; // e.g., Success, Failure, Risk, Recommendation
 
-    private String createdBy;
-    private LocalDateTime createdAt;
-    private String updatedBy;
-    private LocalDateTime updatedAt;
+	private String createdBy;
+	private LocalDateTime createdAt;
+	private String updatedBy;
+	private LocalDateTime updatedAt;
 }

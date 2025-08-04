@@ -1,6 +1,5 @@
 package com.resourcemanagement.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -21,33 +20,33 @@ import lombok.NoArgsConstructor;
 @Table(name = "release_requests")
 public class ReleaseRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne
-    private Project project;
+	@ManyToOne
+	private Project project;
 
-    @ManyToOne
-    private Resource resource;
+	@ManyToOne
+	private Resource resource;
 
-    @ManyToOne
-    private Resource replacement; // Optional
+	@ManyToOne
+	private Resource replacement; // Optional
 
-    private String reason;
+	private String reason;
 
-    private LocalDateTime effectiveDate;
+	private LocalDateTime effectiveDate;
 
-    private String notes;
+	private String notes;
 
-    @Column(name = "status")
-    private String status;
+	@Column(name = "status")
+	private String status;
 
-    private String approvalComments;
+	private String approvalComments;
 
-    private String createdBy;
-    private LocalDateTime createdAt;
-    private String updatedBy;
-    private LocalDateTime updatedAt;
+	private String createdBy;
+	private LocalDateTime createdAt;
+	private String updatedBy;
+	private LocalDateTime updatedAt;
 
 }

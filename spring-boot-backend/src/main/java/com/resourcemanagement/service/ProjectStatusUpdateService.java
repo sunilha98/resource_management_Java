@@ -26,7 +26,7 @@ public class ProjectStatusUpdateService {
 	public ProjectStatusUpdateDTO createStatus(ProjectStatusUpdateDTO dto) {
 		Project project = projectRepo.findById(dto.getProjectId())
 				.orElseThrow(() -> new RuntimeException("Project not found"));
-		
+
 		project.setStatus(ProjectStatus.valueOf(dto.getStatus()));
 
 		ProjectStatusUpdate status = new ProjectStatusUpdate();
@@ -41,7 +41,7 @@ public class ProjectStatusUpdateService {
 		status.setUpdatedBy(dto.getUpdatedBy());
 
 		ProjectStatusUpdate saved = statusRepo.save(status);
-		
+
 		return convertToDTO(saved);
 	}
 

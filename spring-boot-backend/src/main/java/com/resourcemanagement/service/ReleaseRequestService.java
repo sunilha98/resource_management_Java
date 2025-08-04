@@ -1,6 +1,5 @@
 package com.resourcemanagement.service;
 
-import java.net.Authenticator.RequestorType;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,80 +21,79 @@ import jakarta.transaction.Transactional;
 @Service
 public class ReleaseRequestService {
 
-    @Autowired
-    private ReleaseRequestRepository releaseRequestRepository;
+	@Autowired
+	private ReleaseRequestRepository releaseRequestRepository;
 
-    @Autowired
-    private ProjectRepository projectRepository;
+	@Autowired
+	private ProjectRepository projectRepository;
 
-    @Autowired
-    private ResourceRepository resourceRepository;
-    
-    @Autowired
-    private AllocationRepository allocationRepository;
+	@Autowired
+	private ResourceRepository resourceRepository;
 
-    public ReleaseRequest createReleaseRequest(ReleaseRequestDTO dto) {
-        ReleaseRequest request = new ReleaseRequest();
-        request.setProject(projectRepository.findById(dto.getProjectId()).orElseThrow());
-        request.setResource(resourceRepository.findById(dto.getResourceId()).orElseThrow());
+	@Autowired
+	private AllocationRepository allocationRepository;
 
-        if (dto.getReplacementId() != null) {
-            request.setReplacement(resourceRepository.findById(dto.getReplacementId()).orElse(null));
-        }
+	public ReleaseRequest createReleaseRequest(ReleaseRequestDTO dto) {
+		ReleaseRequest request = new ReleaseRequest();
+		request.setProject(projectRepository.findById(dto.getProjectId()).orElseThrow());
+		request.setResource(resourceRepository.findById(dto.getResourceId()).orElseThrow());
 
-        request.setReason(dto.getReason());
-        request.setEffectiveDate(dto.getEffectiveDate());
-        request.setNotes(dto.getNotes());
-        request.setCreatedBy("system"); // Replace with logged-in user
-        request.setCreatedAt(LocalDateTime.now());
-        request.setStatus("PENDING");
+		if (dto.getReplacementId() != null) {
+			request.setReplacement(resourceRepository.findById(dto.getReplacementId()).orElse(null));
+		}
 
-        return releaseRequestRepository.save(request);
-    }
+		request.setReason(dto.getReason());
+		request.setEffectiveDate(dto.getEffectiveDate());
+		request.setNotes(dto.getNotes());
+		request.setCreatedBy("system"); // Replace with logged-in user
+		request.setCreatedAt(LocalDateTime.now());
+		request.setStatus("PENDING");
 
-    public List<ReleaseRequest> getAllRequests() {
-        return releaseRequestRepository.findAll();
-    }
-    
-    public void updateStatus(Long requestId, String status) {
-        ReleaseRequest request = releaseRequestRepository.findById(requestId)
-            .orElseThrow(() -> new RuntimeException("Release request not found"));
+		return releaseRequestRepository.save(request);
+	}
 
-        request.setStatus(status);
-        releaseRequestRepository.save(request);
+	public List<ReleaseRequest> getAllRequests() {
+		return releaseRequestRepository.findAll();
+	}
 
-        if ("Approved".equalsIgnoreCase(status)) {
-            handleApprovedRelease(request);
-        }
-    }
+	public void updateStatus(Long requestId, String status) {
+		ReleaseRequest request = releaseRequestRepository.findById(requestId)
+				.orElseThrow(() -> new RuntimeException("Release request not found"));
 
-    @Transactional
-    private void handleApprovedRelease(ReleaseRequest request) {
-        Long projectId = request.getProject().getId();
-        Long resourceId = request.getResource().getId();
+		request.setStatus(status);
+		releaseRequestRepository.save(request);
 
-        // 1. Remove the original resource from allocation
-        allocationRepository.deleteByProjectIdAndResourceId(projectId, resourceId);
+		if ("Approved".equalsIgnoreCase(status)) {
+			handleApprovedRelease(request);
+		}
+	}
 
-        // 2. Add replacement resource if provided
-        if (request.getReplacement() != null) {
-            Allocation newAllocation = new Allocation();
-            newAllocation.setProject(request.getProject());
-            newAllocation.setResource(request.getReplacement());
-            newAllocation.setStartDate(request.getEffectiveDate());
-            newAllocation.setEndDate(request.getEffectiveDate().plusYears(1));
-            allocationRepository.save(newAllocation);
-        }
-        
-        // 3. Change bench status for both the resources
-        Resource oldResource = request.getResource();
-        oldResource.setBenchStatus(BenchStatus.AVAILABLE);
-        resourceRepository.save(oldResource);
-        
-        Resource newResource = request.getReplacement();
-        newResource.setBenchStatus(BenchStatus.ALLOCATED);
-        resourceRepository.save(newResource);
-    }
+	@Transactional
+	private void handleApprovedRelease(ReleaseRequest request) {
+		Long projectId = request.getProject().getId();
+		Long resourceId = request.getResource().getId();
 
+		// 1. Remove the original resource from allocation
+		allocationRepository.deleteByProjectIdAndResourceId(projectId, resourceId);
+
+		// 2. Add replacement resource if provided
+		if (request.getReplacement() != null) {
+			Allocation newAllocation = new Allocation();
+			newAllocation.setProject(request.getProject());
+			newAllocation.setResource(request.getReplacement());
+			newAllocation.setStartDate(request.getEffectiveDate());
+			newAllocation.setEndDate(request.getEffectiveDate().plusYears(1));
+			allocationRepository.save(newAllocation);
+		}
+
+		// 3. Change bench status for both the resources
+		Resource oldResource = request.getResource();
+		oldResource.setBenchStatus(BenchStatus.AVAILABLE);
+		resourceRepository.save(oldResource);
+
+		Resource newResource = request.getReplacement();
+		newResource.setBenchStatus(BenchStatus.ALLOCATED);
+		resourceRepository.save(newResource);
+	}
 
 }

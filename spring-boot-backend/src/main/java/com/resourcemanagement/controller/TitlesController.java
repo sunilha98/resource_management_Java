@@ -13,13 +13,13 @@ import com.resourcemanagement.repository.TitleRepository;
 @RestController
 @RequestMapping("/titles")
 public class TitlesController {
-	
+
 	@Autowired
 	private TitleRepository titleRepository;
 
 	@GetMapping
 	public List<Title> getAllTitles() {
-	    return titleRepository.findAll();
+		return titleRepository.findAll();
 	}
 
 }

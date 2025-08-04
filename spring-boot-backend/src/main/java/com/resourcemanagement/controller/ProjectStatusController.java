@@ -34,10 +34,10 @@ public class ProjectStatusController {
 			@AuthenticationPrincipal UserDetails user) {
 		dto.setUpdatedBy(user.getUsername());
 		ProjectStatusUpdateDTO projectStatusResDto = service.createStatus(dto);
-		
+
 		ActivityContextHolder.setDetail("Project Code", projectStatusResDto.getProjectCode());
 		ActivityContextHolder.setDetail("Status", projectStatusResDto.getStatus());
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(projectStatusResDto);
 	}
 
@@ -45,7 +45,7 @@ public class ProjectStatusController {
 	public ResponseEntity<List<ProjectStatusUpdateDTO>> getStatusByProject(@PathVariable Long projectId) {
 		return ResponseEntity.ok(service.getStatusByProject(projectId));
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<List<ProjectStatusUpdateDTO>> getAllStatus() {
 		return ResponseEntity.ok(service.getAllStatus());

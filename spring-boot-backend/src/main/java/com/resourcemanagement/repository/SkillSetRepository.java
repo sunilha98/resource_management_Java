@@ -6,5 +6,4 @@ import com.resourcemanagement.entity.Skillset;
 
 public interface SkillSetRepository extends JpaRepository<Skillset, Long> {
 
-
 }

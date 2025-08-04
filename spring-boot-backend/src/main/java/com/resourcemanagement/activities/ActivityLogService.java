@@ -12,7 +12,7 @@ import com.resourcemanagement.repository.ActivityLogRepository;
 
 @Service
 public class ActivityLogService {
-	
+
 	@Autowired
 	private ActivityLogRepository repository;
 

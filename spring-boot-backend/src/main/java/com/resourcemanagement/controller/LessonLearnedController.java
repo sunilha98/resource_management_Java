@@ -39,12 +39,12 @@ public class LessonLearnedController {
 			@AuthenticationPrincipal UserDetails user) {
 		dto.setCreatedBy(user.getUsername());
 		LessonLearnedDTO created = lessonService.createLesson(dto);
-		
+
 		ActivityContextHolder.setDetail("Lesson", dto.getTitle());
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<List<LessonLearnedDTO>> getAllLessons() {
 		return ResponseEntity.ok(lessonService.getAllLessons());
@@ -60,9 +60,9 @@ public class LessonLearnedController {
 	public ResponseEntity<LessonLearnedDTO> updateLesson(@PathVariable Long id,
 			@Valid @RequestBody LessonLearnedDTO dto, @AuthenticationPrincipal UserDetails user) {
 		dto.setUpdatedBy(user.getUsername());
-		
+
 		LessonLearnedDTO resDto = lessonService.updateLesson(id, dto);
-		
+
 		ActivityContextHolder.setDetail("Lesson", resDto.getTitle());
 		return ResponseEntity.ok(resDto);
 	}

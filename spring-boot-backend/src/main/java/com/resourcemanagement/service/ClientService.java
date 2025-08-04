@@ -13,21 +13,21 @@ import com.resourcemanagement.repository.ClientRepository;
 public class ClientService {
 
 	@Autowired
-    private ClientRepository clientRepository;
+	private ClientRepository clientRepository;
 
-    public void createClient(ClientRequest request) {
-        if (clientRepository.existsByCode(request.getCode())) {
-            throw new RuntimeException("Client code already exists");
-        }
+	public void createClient(ClientRequest request) {
+		if (clientRepository.existsByCode(request.getCode())) {
+			throw new RuntimeException("Client code already exists");
+		}
 
-        Client client = new Client();
-        client.setName(request.getName());
-        client.setCode(request.getCode());
-        client.setContactEmail(request.getContactEmail());
-        client.setContactPhone(request.getContactPhone());
-        client.setIsActive(true);
-        client.setCreatedAt(LocalDateTime.now());
+		Client client = new Client();
+		client.setName(request.getName());
+		client.setCode(request.getCode());
+		client.setContactEmail(request.getContactEmail());
+		client.setContactPhone(request.getContactPhone());
+		client.setIsActive(true);
+		client.setCreatedAt(LocalDateTime.now());
 
-        clientRepository.save(client);
-    }
+		clientRepository.save(client);
+	}
 }

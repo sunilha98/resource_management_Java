@@ -61,9 +61,9 @@ public class ProjectController {
 	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('RMT')")
 	public ResponseEntity<Project> createProject(@RequestBody Project project) {
 		Project savedProject = projectRepository.save(project);
-		
+
 		ActivityContextHolder.setDetail("Project", savedProject.getName());
-		
+
 		return ResponseEntity.ok(savedProject);
 	}
 

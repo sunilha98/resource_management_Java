@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableAsync
 public class ResourceManagementApiApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(ResourceManagementApiApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(ResourceManagementApiApplication.class, args);
+	}
 }
 
 // TODO async and details logging

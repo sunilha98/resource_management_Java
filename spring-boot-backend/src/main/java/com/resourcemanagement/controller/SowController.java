@@ -23,33 +23,29 @@ import com.resourcemanagement.service.SowService;
 public class SowController {
 
 	@Autowired
-    private SowService sowService;
+	private SowService sowService;
 
-    @PostMapping("/upload")
-    @LogActivity(action = "Created SOW", module = "SOW Management")
-    public ResponseEntity<String> uploadSow(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("priority") String priority,
-            @RequestParam("clientName") String clientName,
-            @RequestParam("projectName") String projectName,
-            @RequestParam("positions") String positionsJson
-    ) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        List<SowUploadRequest.PositionRequest> positions = Arrays.asList(
-                mapper.readValue(positionsJson, SowUploadRequest.PositionRequest[].class)
-        );
+	@PostMapping("/upload")
+	@LogActivity(action = "Created SOW", module = "SOW Management")
+	public ResponseEntity<String> uploadSow(@RequestParam("file") MultipartFile file,
+			@RequestParam("priority") String priority, @RequestParam("clientName") String clientName,
+			@RequestParam("projectName") String projectName, @RequestParam("positions") String positionsJson)
+			throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		List<SowUploadRequest.PositionRequest> positions = Arrays
+				.asList(mapper.readValue(positionsJson, SowUploadRequest.PositionRequest[].class));
 
-        SowUploadRequest request = new SowUploadRequest();
-        request.setPriority(priority);
-        request.setClientName(clientName);
-        request.setProjectName(projectName);
-        request.setPositions(positions);
+		SowUploadRequest request = new SowUploadRequest();
+		request.setPriority(priority);
+		request.setClientName(clientName);
+		request.setProjectName(projectName);
+		request.setPositions(positions);
 
-        sowService.handleSowUpload(file, request);
-        
-        ActivityContextHolder.setDetail("Client", clientName);
-        ActivityContextHolder.setDetail("Project", projectName);
-        
-        return ResponseEntity.ok("SoW and Project created successfully!");
-    }
+		sowService.handleSowUpload(file, request);
+
+		ActivityContextHolder.setDetail("Client", clientName);
+		ActivityContextHolder.setDetail("Project", projectName);
+
+		return ResponseEntity.ok("SoW and Project created successfully!");
+	}
 }

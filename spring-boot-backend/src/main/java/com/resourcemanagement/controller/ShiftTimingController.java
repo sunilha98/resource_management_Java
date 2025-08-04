@@ -21,30 +21,30 @@ import com.resourcemanagement.repository.ShiftTimingRepository;
 @RequestMapping("/shifts")
 public class ShiftTimingController {
 
-    @Autowired
-    private ShiftTimingRepository shiftRepo;
+	@Autowired
+	private ShiftTimingRepository shiftRepo;
 
-    @PostMapping
-    @LogActivity(action = "Created Shift", module = "Shift Management")
-    public ResponseEntity<?> createShift(@RequestBody ShiftTimingDTO dto) {
-        if (shiftRepo.existsByName(dto.getName())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Shift already exists");
-        }
+	@PostMapping
+	@LogActivity(action = "Created Shift", module = "Shift Management")
+	public ResponseEntity<?> createShift(@RequestBody ShiftTimingDTO dto) {
+		if (shiftRepo.existsByName(dto.getName())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Shift already exists");
+		}
 
-        ShiftTiming shift = new ShiftTiming();
-        shift.setName(dto.getName());
-        shift.setStartTime(dto.getStartTime());
-        shift.setEndTime(dto.getEndTime());
+		ShiftTiming shift = new ShiftTiming();
+		shift.setName(dto.getName());
+		shift.setStartTime(dto.getStartTime());
+		shift.setEndTime(dto.getEndTime());
 
-        shiftRepo.save(shift);
+		shiftRepo.save(shift);
 
-        ActivityContextHolder.setDetail("Shift", shift.getName());
-        
-        return ResponseEntity.ok("Shift created successfully");
-    }
+		ActivityContextHolder.setDetail("Shift", shift.getName());
 
-    @GetMapping
-    public ResponseEntity<List<ShiftTiming>> getAllShifts() {
-        return ResponseEntity.ok(shiftRepo.findAll());
-    }
+		return ResponseEntity.ok("Shift created successfully");
+	}
+
+	@GetMapping
+	public ResponseEntity<List<ShiftTiming>> getAllShifts() {
+		return ResponseEntity.ok(shiftRepo.findAll());
+	}
 }

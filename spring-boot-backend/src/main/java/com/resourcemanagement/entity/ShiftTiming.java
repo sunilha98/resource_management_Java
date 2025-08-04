@@ -23,23 +23,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ShiftTiming {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+	@Column(nullable = false, unique = true)
+	private String name;
 
-    @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
+	@Column(name = "start_time", nullable = false)
+	private LocalTime startTime;
 
-    @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
+	@Column(name = "end_time", nullable = false)
+	private LocalTime endTime;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+	@CreatedDate
+	private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+	@LastModifiedDate
+	private LocalDateTime updatedAt;
 
 }

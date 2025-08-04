@@ -89,10 +89,10 @@ public class FulfillmentRequestController {
 		}
 
 		repository.save(request);
-		
+
 		ActivityContextHolder.setDetail("Project", request.getProject().getName());
 		ActivityContextHolder.setDetail("Title", request.getTitle().getName());
-		
+
 		return ResponseEntity.ok().build();
 	}
 
@@ -119,7 +119,7 @@ public class FulfillmentRequestController {
 
 		ActivityContextHolder.setDetail("Project", saved.getProject().getName());
 		ActivityContextHolder.setDetail("Title", saved.getTitle().getName());
-		
+
 		return ResponseEntity.ok(saved);
 	}
 

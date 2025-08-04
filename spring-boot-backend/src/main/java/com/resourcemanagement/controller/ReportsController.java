@@ -16,13 +16,13 @@ import com.resourcemanagement.service.ReportsService;
 @RequestMapping("/reports")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class ReportsController {
-	
+
 	@Autowired
 	private ReportsService reportsService;
 
 	@GetMapping("/spend-tracking")
 	public ResponseEntity<List<SpendTrackingDTO>> getSpendTrackingReport() {
-	    return ResponseEntity.ok(reportsService.getSpendTrackingReport());
+		return ResponseEntity.ok(reportsService.getSpendTrackingReport());
 	}
 
 }
