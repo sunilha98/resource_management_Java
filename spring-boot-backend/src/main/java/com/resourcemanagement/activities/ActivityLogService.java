@@ -1,9 +1,10 @@
-package com.resourcemanagement.service;
+package com.resourcemanagement.activities;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.resourcemanagement.entity.ActivityLog;
@@ -11,9 +12,11 @@ import com.resourcemanagement.repository.ActivityLogRepository;
 
 @Service
 public class ActivityLogService {
+	
 	@Autowired
 	private ActivityLogRepository repository;
 
+	@Async("activityExecutor")
 	public void logActivity(String action, String performedBy, String role, String module, String details) {
 		ActivityLog log = new ActivityLog();
 		log.setAction(action);

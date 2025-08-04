@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.ActivityContextHolder;
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.dto.ReleaseRequestDTO;
 import com.resourcemanagement.entity.ReleaseRequest;
 import com.resourcemanagement.service.ReleaseRequestService;
@@ -22,29 +24,36 @@ import com.resourcemanagement.service.ReleaseRequestService;
 @RequestMapping("/release-requests")
 public class ReleaseRequestController {
 
-    @Autowired
-    private ReleaseRequestService releaseRequestService;
+	@Autowired
+	private ReleaseRequestService releaseRequestService;
 
-    @PostMapping
-    public ResponseEntity<ReleaseRequest> create(@RequestBody ReleaseRequestDTO dto) {
-        ReleaseRequest saved = releaseRequestService.createReleaseRequest(dto);
-        return ResponseEntity.ok(saved);
-    }
+	@PostMapping
+	@LogActivity(action = "Release Request Added", module = "Release Request Management")
+	public ResponseEntity<ReleaseRequest> create(@RequestBody ReleaseRequestDTO dto) {
+		ReleaseRequest saved = releaseRequestService.createReleaseRequest(dto);
 
-    @GetMapping
-    public ResponseEntity<List<ReleaseRequest>> getAll() {
-        return ResponseEntity.ok(releaseRequestService.getAllRequests());
-    }
-    
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> payload) {
-        String status = payload.get("status");
-        try {
-            releaseRequestService.updateStatus(id, status);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update status");
-        }
-    }
+		ActivityContextHolder.setDetail("Project", saved.getProject().getName());
+		ActivityContextHolder.setDetail("Resource",
+				saved.getResource().getFirstName() + " " + saved.getResource().getLastName());
+
+		return ResponseEntity.ok(saved);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<ReleaseRequest>> getAll() {
+		return ResponseEntity.ok(releaseRequestService.getAllRequests());
+	}
+
+	@PatchMapping("/{id}/status")
+	@LogActivity(action = "Release Request Updated", module = "Release Request Management")
+	public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+		String status = payload.get("status");
+		try {
+			releaseRequestService.updateStatus(id, status);
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update status");
+		}
+	}
 
 }

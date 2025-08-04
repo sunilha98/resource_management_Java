@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.resourcemanagement.activities.ActivityContextHolder;
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.dto.SowUploadRequest;
 import com.resourcemanagement.service.SowService;
 
@@ -24,6 +26,7 @@ public class SowController {
     private SowService sowService;
 
     @PostMapping("/upload")
+    @LogActivity(action = "Created SOW", module = "SOW Management")
     public ResponseEntity<String> uploadSow(
             @RequestParam("file") MultipartFile file,
             @RequestParam("priority") String priority,
@@ -43,6 +46,10 @@ public class SowController {
         request.setPositions(positions);
 
         sowService.handleSowUpload(file, request);
+        
+        ActivityContextHolder.setDetail("Client", clientName);
+        ActivityContextHolder.setDetail("Project", projectName);
+        
         return ResponseEntity.ok("SoW and Project created successfully!");
     }
 }

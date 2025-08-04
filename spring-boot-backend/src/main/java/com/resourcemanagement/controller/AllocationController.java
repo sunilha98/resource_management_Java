@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.ActivityContextHolder;
 import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.dto.AllocationDTO;
 import com.resourcemanagement.entity.Allocation;
@@ -97,11 +98,15 @@ public class AllocationController {
         resource.setAllocationPercentage(totalPercent);
         resourceRepository.saveAndFlush(resource);
         
+        ActivityContextHolder.setDetail("Project", savedAllocation.getProject().getName());
+        ActivityContextHolder.setDetail("Resource", savedAllocation.getResource().getFirstName() + " "+ savedAllocation.getResource().getLastName());
+        
         return ResponseEntity.ok(savedAllocation);
     }
     
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('RMT')")
+    @LogActivity(action = "Updated Allocation", module = "Allocation Management")
     public ResponseEntity<Allocation> updateAllocation(@PathVariable Long id, @RequestBody Allocation allocationDetails) {
         return allocationRepository.findById(id)
                 .map(allocation -> {

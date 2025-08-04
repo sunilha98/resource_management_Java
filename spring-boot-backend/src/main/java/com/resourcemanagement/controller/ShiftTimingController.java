@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.ActivityContextHolder;
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.dto.ShiftTimingDTO;
 import com.resourcemanagement.entity.ShiftTiming;
 import com.resourcemanagement.repository.ShiftTimingRepository;
@@ -23,6 +25,7 @@ public class ShiftTimingController {
     private ShiftTimingRepository shiftRepo;
 
     @PostMapping
+    @LogActivity(action = "Created Shift", module = "Shift Management")
     public ResponseEntity<?> createShift(@RequestBody ShiftTimingDTO dto) {
         if (shiftRepo.existsByName(dto.getName())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Shift already exists");
@@ -34,6 +37,9 @@ public class ShiftTimingController {
         shift.setEndTime(dto.getEndTime());
 
         shiftRepo.save(shift);
+
+        ActivityContextHolder.setDetail("Shift", shift.getName());
+        
         return ResponseEntity.ok("Shift created successfully");
     }
 

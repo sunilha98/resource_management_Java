@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.ActivityContextHolder;
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.entity.Location;
 import com.resourcemanagement.service.LocationService;
 
@@ -23,8 +25,14 @@ import com.resourcemanagement.service.LocationService;
 @RequestMapping("/masters/locations")
 public class LocationController {
 
+    private final AllocationController allocationController;
+
     @Autowired
     private LocationService locationService;
+
+    LocationController(AllocationController allocationController) {
+        this.allocationController = allocationController;
+    }
 
     @GetMapping
     @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('RMT')")
@@ -33,28 +41,39 @@ public class LocationController {
     }
 
     @PostMapping
+    @LogActivity(action = "Created Location", module = "Location Management")
     @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
     public Location createLocation(@RequestBody Location location) {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         
-        return locationService.createLocation(location, username);
+        Location resLocation = locationService.createLocation(location, username);
+        
+        ActivityContextHolder.setDetail("Location", resLocation.getName());
+        
+        return resLocation;
     }
 
     @PutMapping("/{id}")
+    @LogActivity(action = "Updated Location", module = "Location Management")
     @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
     public Location updateLocation(@PathVariable Long id,
                                    @RequestBody Location location) {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         
-        return locationService.updateLocation(id, location, username);
+        Location resLocation = locationService.updateLocation(id, location, username);
+        
+        ActivityContextHolder.setDetail("Location", resLocation.getName());
+        return resLocation;
     }
 
     @DeleteMapping("/{id}")
+    @LogActivity(action = "Deleted Location", module = "Location Management")
     @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
     public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
         locationService.deleteLocation(id);
+        ActivityContextHolder.setDetail("Location Id", id.toString());
         return ResponseEntity.ok().build();
     }
 }

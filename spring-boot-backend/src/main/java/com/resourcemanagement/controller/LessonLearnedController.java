@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.ActivityContextHolder;
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.dto.LessonLearnedDTO;
 import com.resourcemanagement.service.LessonLearnedService;
 
@@ -32,10 +34,14 @@ public class LessonLearnedController {
 	private LessonLearnedService lessonService;
 
 	@PostMapping
+	@LogActivity(action = "Created Lesson", module = "Lesson Management")
 	public ResponseEntity<LessonLearnedDTO> createLesson(@Valid @RequestBody LessonLearnedDTO dto,
 			@AuthenticationPrincipal UserDetails user) {
 		dto.setCreatedBy(user.getUsername());
 		LessonLearnedDTO created = lessonService.createLesson(dto);
+		
+		ActivityContextHolder.setDetail("Lesson", dto.getTitle());
+		
 		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
 	
@@ -50,15 +56,22 @@ public class LessonLearnedController {
 	}
 
 	@PutMapping("/{id}")
+	@LogActivity(action = "Updated Lesson", module = "Lesson Management")
 	public ResponseEntity<LessonLearnedDTO> updateLesson(@PathVariable Long id,
 			@Valid @RequestBody LessonLearnedDTO dto, @AuthenticationPrincipal UserDetails user) {
 		dto.setUpdatedBy(user.getUsername());
-		return ResponseEntity.ok(lessonService.updateLesson(id, dto));
+		
+		LessonLearnedDTO resDto = lessonService.updateLesson(id, dto);
+		
+		ActivityContextHolder.setDetail("Lesson", resDto.getTitle());
+		return ResponseEntity.ok(resDto);
 	}
 
 	@DeleteMapping("/{id}")
+	@LogActivity(action = "Deleted Lesson", module = "Lesson Management")
 	public ResponseEntity<Void> deleteLesson(@PathVariable Long id) throws Exception {
 		lessonService.deleteLesson(id);
+		ActivityContextHolder.setDetail("Lesson id: ", id.toString());
 		return ResponseEntity.noContent().build();
 	}
 

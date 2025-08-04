@@ -16,51 +16,64 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.ActivityContextHolder;
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.entity.User;
-import com.resourcemanagement.service.UserDetailsServiceImpl;
 import com.resourcemanagement.service.UsersService;
 
 @RestController
 @RequestMapping("/users")
 public class UsersController {
 
-    @Autowired
-    private UsersService userService;
+	@Autowired
+	private UsersService userService;
 
-    @GetMapping
-    @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
+	@GetMapping
+	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
+	public List<User> getAllUsers() {
+		return userService.getAllUsers();
+	}
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
-    }
+	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
+	public User getUserById(@PathVariable Long id) {
+		return userService.getUserById(id);
+	}
 
-    @PostMapping
-    @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
-    public User createUser(@RequestBody User user) {
-    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String createdBy = authentication.getName();
-        
-        return userService.createUser(user, createdBy);
-    }
+	@PostMapping
+	@LogActivity(action = "Created user", module = "User Management")
+	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
+	public User createUser(@RequestBody User user) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String createdBy = authentication.getName();
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
-    public User updateUser(@PathVariable Long id,
-                           @RequestBody User user) {
-    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String updatedBy = authentication.getName();
-        return userService.updateUser(id, user, updatedBy);
-    }
+		User resUser = userService.createUser(user, createdBy);
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok().build();
-    }
+		ActivityContextHolder.setDetail("User", resUser.getFirstName() + " " + resUser.getLastName());
+
+		return resUser;
+	}
+
+	@PutMapping("/{id}")
+	@LogActivity(action = "Updated user", module = "User Management")
+	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
+	public User updateUser(@PathVariable Long id, @RequestBody User user) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String updatedBy = authentication.getName();
+		User resUser = userService.updateUser(id, user, updatedBy);
+
+		ActivityContextHolder.setDetail("User", resUser.getFirstName() + " " + resUser.getLastName());
+
+		return resUser;
+	}
+
+	@DeleteMapping("/{id}")
+	@LogActivity(action = "Deleted user", module = "User Management")
+	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('PROJECT_MANAGER')")
+	public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+		userService.deleteUser(id);
+
+		ActivityContextHolder.setDetail("User Id", id.toString());
+		return ResponseEntity.ok().build();
+	}
 }

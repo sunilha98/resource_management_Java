@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.ActivityContextHolder;
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.dto.FulfillmentCreationRequestDTO;
 import com.resourcemanagement.dto.FulfillmentRequestDTO;
 import com.resourcemanagement.entity.FulfillmentRequest;
@@ -72,6 +74,7 @@ public class FulfillmentRequestController {
 	}
 
 	@PutMapping("/{id}")
+	@LogActivity(action = "Updated FullFillMent", module = "FullFillMent Management")
 	public ResponseEntity<?> updateStatusAndNotes(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
 		Optional<FulfillmentRequest> optional = repository.findById(id);
 		if (optional.isEmpty())
@@ -86,10 +89,15 @@ public class FulfillmentRequestController {
 		}
 
 		repository.save(request);
+		
+		ActivityContextHolder.setDetail("Project", request.getProject().getName());
+		ActivityContextHolder.setDetail("Title", request.getTitle().getName());
+		
 		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping
+	@LogActivity(action = "Created FullFillMent", module = "FullFillMent Management")
 	public ResponseEntity<?> createFulfillmentRequest(@RequestBody FulfillmentCreationRequestDTO dto) {
 		FulfillmentRequest request = new FulfillmentRequest();
 
@@ -108,6 +116,10 @@ public class FulfillmentRequestController {
 		request.setSkillsets(skills);
 
 		FulfillmentRequest saved = repository.save(request);
+
+		ActivityContextHolder.setDetail("Project", saved.getProject().getName());
+		ActivityContextHolder.setDetail("Title", saved.getTitle().getName());
+		
 		return ResponseEntity.ok(saved);
 	}
 

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.ActivityContextHolder;
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.dto.ProjectStatusUpdateDTO;
 import com.resourcemanagement.service.ProjectStatusUpdateService;
 
@@ -27,10 +29,16 @@ public class ProjectStatusController {
 	private ProjectStatusUpdateService service;
 
 	@PostMapping
+	@LogActivity(action = "Added Project Status", module = "Project Status Management")
 	public ResponseEntity<ProjectStatusUpdateDTO> createStatus(@RequestBody @Valid ProjectStatusUpdateDTO dto,
 			@AuthenticationPrincipal UserDetails user) {
 		dto.setUpdatedBy(user.getUsername());
-		return ResponseEntity.status(HttpStatus.CREATED).body(service.createStatus(dto));
+		ProjectStatusUpdateDTO projectStatusResDto = service.createStatus(dto);
+		
+		ActivityContextHolder.setDetail("Project Code", projectStatusResDto.getProjectCode());
+		ActivityContextHolder.setDetail("Status", projectStatusResDto.getStatus());
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(projectStatusResDto);
 	}
 
 	@GetMapping("/{projectId}")

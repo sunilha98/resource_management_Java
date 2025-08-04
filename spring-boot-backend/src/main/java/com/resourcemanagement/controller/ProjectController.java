@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.resourcemanagement.activities.ActivityContextHolder;
+import com.resourcemanagement.activities.LogActivity;
 import com.resourcemanagement.dto.ProjectsDTO;
 import com.resourcemanagement.entity.Project;
 import com.resourcemanagement.repository.ProjectRepository;
@@ -55,13 +57,18 @@ public class ProjectController {
 	}
 
 	@PostMapping
+	@LogActivity(action = "Created Project", module = "Project Management")
 	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('RMT')")
 	public ResponseEntity<Project> createProject(@RequestBody Project project) {
 		Project savedProject = projectRepository.save(project);
+		
+		ActivityContextHolder.setDetail("Project", savedProject.getName());
+		
 		return ResponseEntity.ok(savedProject);
 	}
 
 	@PutMapping("/{id}")
+	@LogActivity(action = "Updated Project", module = "Project Management")
 	@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('RMT') or hasRole('PROJECT_MANAGER')")
 	public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project projectDetails) {
 		return projectRepository.findById(id).map(project -> {
